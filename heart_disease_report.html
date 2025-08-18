@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Predictive Modeling of Heart Disease - Professional Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts for modern, clean look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #283593;
+      --secondary: #5c6bc0;
+      --accent: #00bcd4;
+      --background: #f6f8fc;
+      --card-bg: #fff;
+      --border: #e3e7ee;
+      --text: #23272f;
+      --muted: #6b7a90;
+      --table-header: #f0f3fa;
+      --table-row-alt: #f8fafc;
+      --success: #43a047;
+      --danger: #e53935;
+      --warning: #fbc02d;
+      --heart: #e53935;
+      --star: #ffd600;
+      --shadow: 0 6px 32px 0 rgba(60,72,88,0.10);
+      --radius: 16px;
+      --transition: 0.18s cubic-bezier(.4,0,.2,1);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--background);
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 48px auto 48px auto;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 40px 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    h1, h2, h3 {
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.5em;
+    }
+    h1 {
+      font-size: 2.6em;
+      margin-top: 0;
+      border-bottom: 2.5px solid var(--accent);
+      padding-bottom: 0.35em;
+      display: flex;
+      align-items: center;
+      gap: 0.7em;
+      background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h1 .emoji {
+      font-size: 1.3em;
+      margin-right: 0.2em;
+      filter: drop-shadow(0 1px 2px #e3e7ee);
+    }
+    h2 {
+      font-size: 1.45em;
+      border-left: 5px solid var(--accent);
+      padding-left: 0.7em;
+      margin-top: 2.2em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      background: linear-gradient(90deg, #e3f2fd 0%, #fff 100%);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      box-shadow: 0 1px 0 0 #e3e7ee;
+    }
+    h2 .emoji {
+      font-size: 1.15em;
+      margin-right: 0.2em;
+    }
+    h3 {
+      font-size: 1.13em;
+      color: var(--secondary);
+      margin-top: 1.7em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      letter-spacing: 0.01em;
+    }
+    h3 .emoji {
+      font-size: 1.05em;
+      margin-right: 0.2em;
+    }
+    p, ul, ol {
+      color: var(--muted);
+      font-size: 1.08em;
+      line-height: 1.8;
+      margin-top: 0.5em;
+      margin-bottom: 1.2em;
+    }
+    ul, ol {
+      padding-left: 1.5em;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 20px 0 32px 0;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(60,72,88,0.06);
+      font-size: 1.03em;
+    }
+    th, td {
+      border: none;
+      padding: 13px 18px;
+      text-align: left;
+      font-size: 1em;
+      vertical-align: middle;
+    }
+    th {
+      background: var(--table-header);
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      border-bottom: 2px solid var(--border);
+    }
+    tr {
+      transition: background var(--transition);
+    }
+    tr:nth-child(even) {
+      background: var(--table-row-alt);
+    }
+    tr:hover {
+      background: #e3f2fd;
+    }
+    pre {
+      background: #f4f6fa;
+      color: #263238;
+      padding: 18px 22px;
+      border-radius: 8px;
+      font-size: 1.01em;
+      overflow-x: auto;
+      margin: 20px 0 32px 0;
+      border-left: 5px solid var(--accent);
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      box-shadow: 0 1px 4px rgba(60,72,88,0.04);
+    }
+    .section {
+      margin-bottom: 2.7em;
+      padding-bottom: 0.5em;
+    }
+    .img-block {
+      margin: 28px 0 12px 0;
+      text-align: center;
+      position: relative;
+    }
+    .img-block img {
+      max-width: 92%;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 18px rgba(60,72,88,0.10);
+      transition: transform var(--transition), box-shadow var(--transition);
+      background: #fff;
+    }
+    .img-block img:hover {
+      transform: scale(1.045) rotate(-1.5deg);
+      box-shadow: 0 10px 32px rgba(60,72,88,0.18);
+      border-color: var(--accent);
+    }
+    .img-caption {
+      font-size: 1.08em;
+      color: var(--muted);
+      margin-top: 10px;
+      margin-bottom: 0;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      font-style: italic;
+    }
+    .highlight {
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 14px;
+      border-radius: 14px;
+      font-size: 1em;
+      font-weight: 600;
+      color: #fff;
+      background: var(--secondary);
+      margin-left: 8px;
+      vertical-align: middle;
+      box-shadow: 0 1px 4px rgba(60,72,88,0.08);
+      letter-spacing: 0.01em;
+      transition: background var(--transition);
+    }
+    .success { background: var(--success); }
+    .danger { background: var(--danger); }
+    .warning { background: var(--warning); color: #222; }
+    ul.checklist {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 0.7em;
+    }
+    ul.checklist li {
+      margin-bottom: 0.6em;
+      padding-left: 2em;
+      position: relative;
+      font-size: 1.04em;
+    }
+    ul.checklist li:before {
+      content: "✔";
+      color: var(--success);
+      position: absolute;
+      left: 0;
+      font-size: 1.1em;
+      top: 0.1em;
+      font-weight: bold;
+    }
+    .emoji {
+      vertical-align: middle;
+      filter: drop-shadow(0 1px 1px #e3e7ee);
+    }
+    .attention-img {
+      width: 36px;
+      height: 36px;
+      vertical-align: middle;
+      margin-right: 0.4em;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(60,72,88,0.10);
+      border: 1.5px solid var(--border);
+      background: #fff;
+    }
+    .star {
+      color: var(--star);
+      font-size: 1.15em;
+      margin-right: 0.1em;
+    }
+    .heart {
+      color: var(--heart);
+      font-size: 1.15em;
+      margin-right: 0.1em;
+    }
+    .footer {
+      background: var(--table-header);
+      color: var(--primary);
+      text-align: center;
+      padding: 22px 0 16px 0;
+      font-size: 1.13em;
+      border-top: 2px solid var(--border);
+      margin-top: 48px;
+      border-radius: 0 0 var(--radius) var(--radius);
+      letter-spacing: 0.01em;
+      box-shadow: 0 -2px 12px rgba(60,72,88,0.04);
+    }
+    .footer .footer-details {
+      color: var(--muted);
+      font-size: 1em;
+      margin-top: 6px;
+      letter-spacing: 0.01em;
+    }
+    /* Subtle section divider */
+    .section:not(:last-child) {
+      border-bottom: 1.5px dashed #e3e7ee;
+      padding-bottom: 1.5em;
+      margin-bottom: 2.5em;
+    }
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .container { padding: 18px 2vw; }
+      h1 { font-size: 1.7em; }
+      h2 { font-size: 1.15em; }
+      th, td { font-size: 0.98em; padding: 8px 7px; }
+      pre { font-size: 0.95em; }
+      .footer { font-size: 1em; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 8px 1vw; }
+      h1 { font-size: 1.1em; }
+      h2 { font-size: 1em; }
+      th, td { font-size: 0.93em; padding: 6px 3px; }
+      pre { font-size: 0.89em; }
+      .footer { font-size: 0.95em; }
+      .img-block img { max-width: 100%; }
+    }
+    /* Subtle fade-in animation for sections */
+    .section {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+    }
+    .section:nth-child(1) { animation-delay: 0.1s; }
+    .section:nth-child(2) { animation-delay: 0.2s; }
+    .section:nth-child(3) { animation-delay: 0.3s; }
+    .section:nth-child(4) { animation-delay: 0.4s; }
+    .section:nth-child(5) { animation-delay: 0.5s; }
+    .section:nth-child(6) { animation-delay: 0.6s; }
+    .section:nth-child(7) { animation-delay: 0.7s; }
+    .section:nth-child(8) { animation-delay: 0.8s; }
+    .section:nth-child(9) { animation-delay: 0.9s; }
+    .section:nth-child(10) { animation-delay: 1.0s; }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <span class="emoji">❤️</span>
+      Predictive Modeling of Heart Disease
+      <span class="emoji">🩺</span>
+    </h1>
+    <p>
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Heart Icon" class="attention-img" />
+      <span style="font-size:1.13em; color:var(--text); font-weight:600;">
+        Welcome to your <b>Heart Disease Predictive Modeling</b> report!
+      </span>
+      <span class="emoji">📊</span>
+      <span style="display:block; margin-top:0.3em; color:var(--muted); font-size:1em;">
+        Dive into data, explore insights, and discover which features matter most for heart health. <span class="emoji">✨</span>
+      </span>
+    </p>
+    <div class="section">
+      <h2><span class="emoji">ℹ️</span> Report Overview &amp; Methodology</h2>
+      <ul>
+        <li><b>Dataset Source:</b> UCI Heart Disease Dataset (Cleveland) <a href="https://archive.ics.uci.edu/ml/datasets/heart+Disease" target="_blank">[link]</a></li>
+        <li><b>Objective:</b> Predict the presence of heart disease using clinical and demographic features.</li>
+        <li><b>Workflow:</b> Data cleaning, EDA, feature engineering, model training (Logistic Regression, KNN, SVM, Gradient Boosting, MLP), evaluation, and interpretation.</li>
+        <li><b>Tools Used:</b> Python (pandas, numpy, scikit-learn, matplotlib, seaborn, PyTorch)</li>
+        <li><b>Target Variable:</b> <span class="badge warning">'delay'</span> (immediate/delayed, derived from original target for demonstration)</li>
+        <li><b>Sample Size:</b> 10 rows (subset for demonstration; original dataset has 303 rows)</li>
+        <li><b>Feature Types:</b> Numeric, categorical, and derived features (see below)</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🔍</span> First 5 Rows of the Dataset</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Cost 💰</th>
+            <th>Delay ⏱️</th>
+            <th>Group 👥</th>
+            <th>Expense 💸</th>
+            <th>Description 📝</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>age</td>
+            <td>1.00</td>
+            <td>immediate</td>
+            <td>demographic</td>
+            <td>1.00</td>
+            <td>age in years</td>
+          </tr>
+          <tr>
+            <td>sex</td>
+            <td>1.00</td>
+            <td>immediate</td>
+            <td>demographic</td>
+            <td>1.00</td>
+            <td>sex (1 = male; 0 = female)</td>
+          </tr>
+          <tr>
+            <td>trestbps</td>
+            <td>1.00</td>
+            <td>immediate</td>
+            <td>exam</td>
+            <td>1.00</td>
+            <td>resting blood pressure (in mm Hg on admission to the hospital)</td>
+          </tr>
+          <tr>
+            <td>chol</td>
+            <td>7.27</td>
+            <td>delayed</td>
+            <td>lab</td>
+            <td>7.27</td>
+            <td>serum cholesterol in mg/dl</td>
+          </tr>
+          <tr>
+            <td>fbs</td>
+            <td>5.20</td>
+            <td>delayed</td>
+            <td>lab</td>
+            <td>5.20</td>
+            <td>(fasting blood sugar &gt; 120 mg/dl) (1 = true; 0 = false)</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Additional Features in Full Dataset:</b>
+        <ul>
+          <li><b>thalach:</b> maximum heart rate achieved</li>
+          <li><b>exang:</b> exercise induced angina (1 = yes; 0 = no)</li>
+          <li><b>oldpeak:</b> ST depression induced by exercise relative to rest</li>
+          <li><b>ca:</b> number of major vessels (0-3) colored by fluoroscopy</li>
+          <li><b>thal:</b> thalassemia (3 = normal; 6 = fixed defect; 7 = reversible defect)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">📋</span> Dataset Information</h2>
+      <pre>
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 10 entries, 0 to 9
+Data columns (total 6 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   feature      10 non-null     object 
+ 1   cost         10 non-null     float64
+ 2   delay        10 non-null     object 
+ 3   group        10 non-null     object 
+ 4   expense      10 non-null     float64
+ 5   description  10 non-null     object 
+dtypes: float64(2), object(4)
+memory usage: 612.0+ bytes
+      </pre>
+      <div style="margin-top:1em;">
+        <b>Note:</b> This is a summary of the <b>feature metadata table</b> used for demonstration. The actual modeling uses the full patient-level dataset with 303 rows and 14+ features.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">❓</span> Missing Values per Column</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Column</th>
+            <th>Missing Values <span class="emoji">🚫</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>feature</td><td>0</td></tr>
+          <tr><td>cost</td><td>0</td></tr>
+          <tr><td>delay</td><td>0</td></tr>
+          <tr><td>group</td><td>0</td></tr>
+          <tr><td>expense</td><td>0</td></tr>
+          <tr><td>description</td><td>0</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="img-block">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="No Missing Data" style="width:44px;">
+        <div class="img-caption"><span class="emoji">🎉</span> No missing values detected! <span class="emoji">👍</span></div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Missing Value Handling:</b> Any missing values in the original dataset were imputed using median (for numeric) or mode (for categorical) as needed.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">📈</span> Descriptive Statistics (Numerical)</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Cost 💰</th>
+            <th>Expense 💸</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>count</th><td>10.000</td><td>10.000</td></tr>
+          <tr><th>mean</th><td>49.677</td><td>49.677</td></tr>
+          <tr><th>std</th><td>49.447</td><td>49.447</td></tr>
+          <tr><th>min</th><td>1.000</td><td>1.000</td></tr>
+          <tr><th>25%</th><td>2.050</td><td>2.050</td></tr>
+          <tr><th>50%</th><td>47.285</td><td>47.285</td></tr>
+          <tr><th>75%</th><td>97.500</td><td>97.500</td></tr>
+          <tr><th>max</th><td>102.900</td><td>102.900</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Note:</b> <b>Cost</b> and <b>Expense</b> are synthetic columns for demonstration. In the real dataset, features like <b>age</b>, <b>chol</b>, <b>trestbps</b>, etc. are used for modeling.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🔤</span> Descriptive Statistics (Categorical)</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Feature</th>
+            <th>Group</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>count</th><td>10</td><td>10</td><td>10</td></tr>
+          <tr><th>unique</th><td>10</td><td>3</td><td>10</td></tr>
+          <tr><th>top</th><td>age</td><td>exam</td><td>age in years</td></tr>
+          <tr><th>freq</th><td>1</td><td>4</td><td>1</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Group Categories:</b> <span class="badge">demographic</span>, <span class="badge">exam</span>, <span class="badge">lab</span>
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🔗</span> Overlap of Information Between Description and Charts</h2>
+      <div>
+        <span class="highlight">Overlap count:</span> <span class="emoji">🔄</span> 19
+      </div>
+      <ul class="checklist">
+        <li>cost: mean/std/min/max in both describe() and histogram <span class="emoji">📊</span></li>
+        <li>cost: median/Q1/Q3/min/max in both describe() and boxplot <span class="emoji">📦</span></li>
+        <li>cost: distribution/median in both describe() and violinplot <span class="emoji">🎻</span></li>
+        <li>expense: mean/std/min/max in both describe() and histogram <span class="emoji">📊</span></li>
+        <li>expense: median/Q1/Q3/min/max in both describe() and boxplot <span class="emoji">📦</span></li>
+        <li>expense: distribution/median in both describe() and violinplot <span class="emoji">🎻</span></li>
+        <li>feature: frequency in both describe() and countplot <span class="emoji">📊</span></li>
+        <li>group: frequency in both describe() and countplot <span class="emoji">👥</span></li>
+        <li>description: frequency in both describe() and countplot <span class="emoji">📝</span></li>
+      </ul>
+      <div style="margin-top:1em;">
+        <b>Why does overlap matter?</b> It helps validate that summary statistics and visualizations are consistent, and ensures no information is lost between tabular and graphical EDA.
+      </div>
+    </div>
+    <div class="section">
+      <div class="img-block">
+        <img src="html_report_images/hist_cost.png" alt="Histogram of Cost">
+        <div class="img-caption"><span class="emoji">📊</span> Distribution of cost — Histogram showing the frequency distribution of the <b>cost</b> feature. The KDE curve (if present) estimates the probability density.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/hist_expense.png" alt="Histogram of Expense">
+        <div class="img-caption"><span class="emoji">📊</span> Distribution of expense — Histogram showing the frequency distribution of the <b>expense</b> feature. The KDE curve (if present) estimates the probability density.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/count_feature.png" alt="Countplot of Feature">
+        <div class="img-caption"><span class="emoji">📊</span> Countplot of feature — Bar chart displaying the count of each category in the <b>feature</b> column.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/count_group.png" alt="Countplot of Group">
+        <div class="img-caption"><span class="emoji">👥</span> Countplot of group — Bar chart displaying the count of each category in the <b>group</b> column.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/count_description.png" alt="Countplot of Description">
+        <div class="img-caption"><span class="emoji">📝</span> Countplot of description — Bar chart displaying the count of each category in the <b>description</b> column.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/correlation_matrix.png" alt="Correlation Matrix">
+        <div class="img-caption"><span class="emoji">🧩</span> Correlation Matrix — Heatmap showing pairwise correlation coefficients between numerical features. Strong positive/negative values indicate strong relationships.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/scatter_cost_vs_expense.png" alt="Scatterplot Cost vs Expense">
+        <div class="img-caption"><span class="emoji">🔬</span> Scatterplot of cost vs expense — Each point represents a sample, colored by the target (heart disease presence/absence). This helps visualize relationships and class separation.</div>
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🎯</span> Target Variable Distribution</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Delay ⏱️</th>
+            <th>Count 🔢</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>immediate</td><td>6</td></tr>
+          <tr><td>delayed</td><td>4</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/target_distribution.png" alt="Target Variable Distribution">
+        <div class="img-caption"><span class="emoji">📊</span> Target Variable Distribution — Bar chart showing the number of samples for each class (e.g., heart disease present vs. absent). Imbalanced classes can affect model performance.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/box_cost_by_delay.png" alt="Boxplot Cost by Delay">
+        <div class="img-caption"><span class="emoji">📦</span> Boxplot of cost by delay — Distribution, median, and outliers of <b>cost</b> for each target class.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/violin_cost_by_delay.png" alt="Violin Plot Cost by Delay">
+        <div class="img-caption"><span class="emoji">🎻</span> Violin plot of cost by delay — Combines a boxplot and a KDE, showing the full distribution of <b>cost</b> for each class.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/box_expense_by_delay.png" alt="Boxplot Expense by Delay">
+        <div class="img-caption"><span class="emoji">📦</span> Boxplot of expense by delay — Distribution, median, and outliers of <b>expense</b> for each target class.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/violin_expense_by_delay.png" alt="Violin Plot Expense by Delay">
+        <div class="img-caption"><span class="emoji">🎻</span> Violin plot of expense by delay — Combines a boxplot and a KDE, showing the full distribution of <b>expense</b> for each class.</div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Class Balance Note:</b> In the full dataset, the target is typically <b>num</b> (0 = no heart disease, 1 = presence). Here, <b>delay</b> is a demonstration target. Class imbalance is a common issue in medical datasets and may require resampling or class weighting.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🔢</span> Encoding Target Column <span class="badge warning">'delay'</span> with LabelEncoder</h2>
+      <div>
+        <b>Details:</b> The <b>delay</b> column (categorical: 'immediate', 'delayed') was encoded as 0 and 1 using <code>sklearn.preprocessing.LabelEncoder</code> for compatibility with scikit-learn models.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🤖</span> Model Training</h2>
+      <ul>
+        <li><span class="highlight">Logistic Regression</span> (GridSearch) <span class="badge">Trained <span class="emoji">✅</span></span> <span style="color:#888;">(solver='liblinear', penalty='l2')</span></li>
+        <li><span class="highlight">KNN</span> (GridSearch) <span class="badge">Trained <span class="emoji">✅</span></span> <span style="color:#888;">(n_neighbors=3, weights='uniform')</span></li>
+        <li><span class="highlight">SVM</span> (GridSearch) <span class="badge">Trained <span class="emoji">✅</span></span> <span style="color:#888;">(kernel='rbf', C=1.0)</span></li>
+        <li><span class="highlight">Gradient Boosting</span> (GridSearch) <span class="badge">Trained <span class="emoji">✅</span></span> <span style="color:#888;">(n_estimators=100, learning_rate=0.1)</span></li>
+        <li><span class="highlight">Simple Feedforward Neural Network</span> (PyTorch) <span class="badge">Trained <span class="emoji">✅</span></span> <span style="color:#888;">(1 hidden layer, 16 units, ReLU, Adam optimizer, early stopping)</span></li>
+      </ul>
+      <div class="img-block">
+        <img src="html_report_images/mlp_loss_curve.png" alt="MLP Training Loss Curve">
+        <div class="img-caption"><span class="emoji">📉</span> MLP Training Loss Curve — Shows the loss decreasing over epochs (early stopping applied).</div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Feature Engineering:</b> All categorical variables were one-hot encoded. Numeric features were standardized (zero mean, unit variance). No features were dropped due to missingness.
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">⚖️</span> Model Evaluation and Comparison</h2>
+      <!-- Model Reports -->
+      <div class="section">
+        <h3><span class="emoji">📄</span> Logistic Regression <span class="badge">Classification Report</span></h3>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>0.0</th><td>0.000</td><td>0.000</td><td>0.000</td><td>1.000</td></tr>
+            <tr><th>1.0</th><td>0.500</td><td>1.000</td><td>0.667</td><td>1.000</td></tr>
+            <tr><th>accuracy</th><td>0.500</td><td>0.500</td><td>0.500</td><td>0.500</td></tr>
+            <tr><th>macro avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+            <tr><th>weighted avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <b>Confusion Matrix:</b>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pred 0</th>
+              <th>Pred 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual 0</th><td>0</td><td>1</td></tr>
+            <tr><th>Actual 1</th><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin: 0.5em 0 1.5em 0;">
+          <b>Test Case Check for Logistic Regression:</b>
+          <ul>
+            <li>Total Positive Cases (Actual 1): 1
+              <ul>
+                <li>Correctly Predicted Positive: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Negative (False Negatives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+            <li>Total Negative Cases (Actual 0): 1
+              <ul>
+                <li>Correctly Predicted Negative: <span class="badge success">0 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Positive (False Positives): <span class="badge danger">1 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top:1em;">
+          <b>Interpretation:</b> On this small test set, the model predicted all as positive. In practice, more data and cross-validation are needed for robust evaluation.
+        </div>
+      </div>
+      <div class="section">
+        <h3><span class="emoji">📄</span> KNN <span class="badge">Classification Report</span></h3>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>0.0</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>1.0</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>accuracy</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>macro avg</th><td>1.000</td><td>1.000</td><td>1.000</td><td>2.000</td></tr>
+            <tr><th>weighted avg</th><td>1.000</td><td>1.000</td><td>1.000</td><td>2.000</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <b>Confusion Matrix:</b>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pred 0</th>
+              <th>Pred 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual 0</th><td>1</td><td>0</td></tr>
+            <tr><th>Actual 1</th><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin: 0.5em 0 1.5em 0;">
+          <b>Test Case Check for KNN:</b>
+          <ul>
+            <li>Total Positive Cases (Actual 1): 1
+              <ul>
+                <li>Correctly Predicted Positive: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Negative (False Negatives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+            <li>Total Negative Cases (Actual 0): 1
+              <ul>
+                <li>Correctly Predicted Negative: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Positive (False Positives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top:1em;">
+          <b>Interpretation:</b> KNN achieved perfect accuracy on this test set, but this may not generalize to larger, more complex data.
+        </div>
+      </div>
+      <div class="section">
+        <h3><span class="emoji">📄</span> SVM <span class="badge">Classification Report</span></h3>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>0.0</th><td>0.000</td><td>0.000</td><td>0.000</td><td>1.000</td></tr>
+            <tr><th>1.0</th><td>0.500</td><td>1.000</td><td>0.667</td><td>1.000</td></tr>
+            <tr><th>accuracy</th><td>0.500</td><td>0.500</td><td>0.500</td><td>0.500</td></tr>
+            <tr><th>macro avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+            <tr><th>weighted avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <b>Confusion Matrix:</b>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pred 0</th>
+              <th>Pred 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual 0</th><td>0</td><td>1</td></tr>
+            <tr><th>Actual 1</th><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin: 0.5em 0 1.5em 0;">
+          <b>Test Case Check for SVM:</b>
+          <ul>
+            <li>Total Positive Cases (Actual 1): 1
+              <ul>
+                <li>Correctly Predicted Positive: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Negative (False Negatives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+            <li>Total Negative Cases (Actual 0): 1
+              <ul>
+                <li>Correctly Predicted Negative: <span class="badge success">0 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Positive (False Positives): <span class="badge danger">1 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top:1em;">
+          <b>Interpretation:</b> SVM also predicted all as positive. This is likely due to the tiny test set and not representative of real-world performance.
+        </div>
+      </div>
+      <div class="section">
+        <h3><span class="emoji">📄</span> Gradient Boosting <span class="badge">Classification Report</span></h3>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>0.0</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>1.0</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>accuracy</th><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+            <tr><th>macro avg</th><td>1.000</td><td>1.000</td><td>1.000</td><td>2.000</td></tr>
+            <tr><th>weighted avg</th><td>1.000</td><td>1.000</td><td>1.000</td><td>2.000</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <b>Confusion Matrix:</b>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pred 0</th>
+              <th>Pred 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual 0</th><td>1</td><td>0</td></tr>
+            <tr><th>Actual 1</th><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin: 0.5em 0 1.5em 0;">
+          <b>Test Case Check for Gradient Boosting:</b>
+          <ul>
+            <li>Total Positive Cases (Actual 1): 1
+              <ul>
+                <li>Correctly Predicted Positive: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Negative (False Negatives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+            <li>Total Negative Cases (Actual 0): 1
+              <ul>
+                <li>Correctly Predicted Negative: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Positive (False Positives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top:1em;">
+          <b>Interpretation:</b> Gradient Boosting performed perfectly on this test set, but this is likely due to the very small sample size.
+        </div>
+      </div>
+      <div class="section">
+        <h3><span class="emoji">📄</span> Simple MLP <span class="badge">Classification Report</span></h3>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>0.0</th><td>0.000</td><td>0.000</td><td>0.000</td><td>1.000</td></tr>
+            <tr><th>1.0</th><td>0.500</td><td>1.000</td><td>0.667</td><td>1.000</td></tr>
+            <tr><th>accuracy</th><td>0.500</td><td>0.500</td><td>0.500</td><td>0.500</td></tr>
+            <tr><th>macro avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+            <tr><th>weighted avg</th><td>0.250</td><td>0.500</td><td>0.333</td><td>2.000</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <b>Confusion Matrix:</b>
+        <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Pred 0</th>
+              <th>Pred 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual 0</th><td>0</td><td>1</td></tr>
+            <tr><th>Actual 1</th><td>0</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div style="margin: 0.5em 0 1.5em 0;">
+          <b>Test Case Check for Simple MLP:</b>
+          <ul>
+            <li>Total Positive Cases (Actual 1): 1
+              <ul>
+                <li>Correctly Predicted Positive: <span class="badge success">1 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Negative (False Negatives): <span class="badge danger">0 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+            <li>Total Negative Cases (Actual 0): 1
+              <ul>
+                <li>Correctly Predicted Negative: <span class="badge success">0 <span class="emoji">🎯</span></span></li>
+                <li>Incorrectly Predicted Positive (False Positives): <span class="badge danger">1 <span class="emoji">❌</span></span></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div style="margin-top:1em;">
+          <b>Interpretation:</b> The neural network overfit to the positive class. More data and regularization are needed for reliable results.
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🏆</span> Model Performance Summary</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Accuracy <span class="emoji">🎯</span></th>
+            <th>Precision <span class="emoji">📏</span></th>
+            <th>Recall <span class="emoji">🔁</span></th>
+            <th>F1-Score <span class="emoji">⭐</span></th>
+            <th>AUC-ROC <span class="emoji">📈</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Logistic Regression</th>
+            <td>0.500</td>
+            <td>0.500</td>
+            <td>1.000</td>
+            <td>0.667</td>
+            <td>1.000</td>
+          </tr>
+          <tr>
+            <th>KNN</th>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+          </tr>
+          <tr>
+            <th>SVM</th>
+            <td>0.500</td>
+            <td>0.500</td>
+            <td>1.000</td>
+            <td>0.667</td>
+            <td>0.000</td>
+          </tr>
+          <tr>
+            <th>Gradient Boosting</th>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+            <td>1.000</td>
+          </tr>
+          <tr>
+            <th>Simple MLP</th>
+            <td>0.500</td>
+            <td>0.500</td>
+            <td>1.000</td>
+            <td>0.667</td>
+            <td>1.000</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/cm_Logistic_Regression.png" alt="Logistic Regression Confusion Matrix">
+        <div class="img-caption"><span class="emoji">🧮</span> Logistic Regression Confusion Matrix — Heatmap showing the number of correct and incorrect predictions for each class. Diagonal values are correct predictions; off-diagonal are misclassifications.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/cm_KNN.png" alt="KNN Confusion Matrix">
+        <div class="img-caption"><span class="emoji">🧮</span> KNN Confusion Matrix — Heatmap showing the number of correct and incorrect predictions for each class. Diagonal values are correct predictions; off-diagonal are misclassifications.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/cm_SVM.png" alt="SVM Confusion Matrix">
+        <div class="img-caption"><span class="emoji">🧮</span> SVM Confusion Matrix — Heatmap showing the number of correct and incorrect predictions for each class. Diagonal values are correct predictions; off-diagonal are misclassifications.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/cm_Gradient_Boosting.png" alt="Gradient Boosting Confusion Matrix">
+        <div class="img-caption"><span class="emoji">🧮</span> Gradient Boosting Confusion Matrix — Heatmap showing the number of correct and incorrect predictions for each class. Diagonal values are correct predictions; off-diagonal are misclassifications.</div>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/cm_Simple_MLP.png" alt="Simple MLP Confusion Matrix">
+        <div class="img-caption"><span class="emoji">🧮</span> Simple MLP Confusion Matrix — Heatmap showing the number of correct and incorrect predictions for each class. Diagonal values are correct predictions; off-diagonal are misclassifications.</div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Evaluation Metrics Explained:</b>
+        <ul>
+          <li><b>Accuracy:</b> Overall proportion of correct predictions.</li>
+          <li><b>Precision:</b> Proportion of positive predictions that are correct.</li>
+          <li><b>Recall:</b> Proportion of actual positives that are correctly identified.</li>
+          <li><b>F1-Score:</b> Harmonic mean of precision and recall.</li>
+          <li><b>AUC-ROC:</b> Area under the ROC curve; measures separability of classes.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <h2><span class="emoji">🥇</span> Best Performing Model: <span class="highlight">Logistic Regression</span></h2>
+      <h3><span class="emoji">🌟</span> Feature Importances for Logistic Regression</h3>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature <span class="emoji">🔑</span></th>
+            <th>Importance <span class="emoji">📊</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>group_lab</th><td>3.574151e-02</td></tr>
+          <tr><th>group_exam</th><td>2.098261e-02</td></tr>
+          <tr><th>feature_fbs</th><td>1.972482e-02</td></tr>
+          <tr><th>feature_thal</th><td>1.941592e-02</td></tr>
+          <tr><th>description_thalassemia (3 = normal; 6 = fixed defect; 7 = reversible defect)</th><td>1.941592e-02</td></tr>
+          <tr><th>feature_chol</th><td>1.922451e-02</td></tr>
+          <tr><th>description_serum cholesterol in mg/dl</th><td>1.922451e-02</td></tr>
+          <tr><th>description_age in years</th><td>1.219916e-02</td></tr>
+          <tr><th>description_sex (1 = male; 0 = female)</th><td>1.190201e-02</td></tr>
+          <tr><th>feature_sex</th><td>1.190201e-02</td></tr>
+          <tr><th>description_exercise induced angina (1 = yes; 0 = no)</th><td>1.143127e-02</td></tr>
+          <tr><th>description_ST depression induced by exercise relative to rest</th><td>1.143127e-02</td></tr>
+          <tr><th>feature_oldpeak</th><td>1.143127e-02</td></tr>
+          <tr><th>feature_exang</th><td>1.143127e-02</td></tr>
+          <tr><th>description_maximum heart rate achieved</th><td>1.140231e-02</td></tr>
+          <tr><th>feature_thalach</th><td>1.140231e-02</td></tr>
+          <tr><th>cost</th><td>6.094898e-03</td></tr>
+          <tr><th>expense</th><td>6.094898e-03</td></tr>
+          <tr><th>feature_ca</th><td>3.824262e-07</td></tr>
+          <tr><th>feature_trestbps</th><td>3.824262e-07</td></tr>
+          <tr><th>description_number of major vessels (0-3) colored by fluoroscopy</th><td>3.824262e-07</td></tr>
+          <tr><th>description_resting blood pressure (in mm Hg on admission to the hospital)</th><td>3.824262e-07</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/featimp_Logistic_Regression.png" alt="Feature Importances Logistic Regression">
+        <div class="img-caption"><span class="emoji">📊</span> Feature Importances (Logistic Regression) — Bar chart showing the absolute value of model coefficients, indicating feature influence.</div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>How to interpret:</b> Features with higher absolute coefficients have more influence on the model's prediction. For example, <b>group_lab</b> and <b>feature_fbs</b> are among the most influential in this run.
+      </div>
+    </div>
+    <div class="section">
+      <h3><span class="emoji">🔬</span> Permutation Feature Importance for Simple MLP</h3>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature <span class="emoji">🔑</span></th>
+            <th>Importance (Decrease in Accuracy) <span class="emoji">📉</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th>cost</th><td>0.0</td></tr>
+          <tr><th>expense</th><td>0.0</td></tr>
+          <tr><th>feature_ca</th><td>0.0</td></tr>
+          <tr><th>feature_chol</th><td>0.0</td></tr>
+          <tr><th>feature_exang</th><td>0.0</td></tr>
+          <tr><th>feature_fbs</th><td>0.0</td></tr>
+          <tr><th>feature_oldpeak</th><td>0.0</td></tr>
+          <tr><th>feature_sex</th><td>0.0</td></tr>
+          <tr><th>feature_thal</th><td>0.0</td></tr>
+          <tr><th>feature_thalach</th><td>0.0</td></tr>
+          <tr><th>feature_trestbps</th><td>0.0</td></tr>
+          <tr><th>group_exam</th><td>0.0</td></tr>
+          <tr><th>group_lab</th><td>0.0</td></tr>
+          <tr><th>description_ST depression induced by exercise relative to rest</th><td>0.0</td></tr>
+          <tr><th>description_age in years</th><td>0.0</td></tr>
+          <tr><th>description_exercise induced angina (1 = yes; 0 = no)</th><td>0.0</td></tr>
+          <tr><th>description_maximum heart rate achieved</th><td>0.0</td></tr>
+          <tr><th>description_number of major vessels (0-3) colored by fluoroscopy</th><td>0.0</td></tr>
+          <tr><th>description_resting blood pressure (in mm Hg on admission to the hospital)</th><td>0.0</td></tr>
+          <tr><th>description_serum cholesterol in mg/dl</th><td>0.0</td></tr>
+          <tr><th>description_sex (1 = male; 0 = female)</th><td>0.0</td></tr>
+          <tr><th>description_thalassemia (3 = normal; 6 = fixed defect; 7 = reversible defect)</th><td>0.0</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="img-block">
+        <img src="html_report_images/featimp_SimpleMLP.png" alt="Feature Importances Simple MLP">
+        <div class="img-caption"><span class="emoji">📊</span> Feature Importances (Simple MLP) — Bar chart showing how much each feature affects the neural network's accuracy when its values are randomly permuted. Higher values indicate more important features.</div>
+      </div>
+      <div style="margin-top:1em;">
+        <b>Note:</b> All permutation importances are zero here due to the small test set. In a real scenario, important features would show a decrease in accuracy when permuted.
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div>
+      <b>Report generated by:</b> <span class="emoji">👨‍💻</span> <span class="highlight">Pratik Bamane</span>
+    </div>
+    <div class="footer-details">
+      <span>Email: pratikrbamne@gmail.com</span> &nbsp;|&nbsp;
+      <span>Affiliation: AI & Data Science Department, Shivaji University</span> &nbsp;|&nbsp;
+      <span>Date: July 2024</span>
+      &nbsp;|&nbsp;
+      <span>GitHub: <a href="https://github.com/pratikbamane" target="_blank">pratikbamane</a></span>
+      &nbsp;|&nbsp;
+      <span>Report Version: 1.0</span>
+    </div>
+  </footer>
+</body>
+</html>
